@@ -13,16 +13,15 @@ background:linear-gradient(#f4f5f8,#ffffff);
 text-align:center;
 margin:0;
 padding:20px;
-transition:background 1.5s;
+transition:background 1s;
 }
 
 body.reveal{
-background:linear-gradient(#cfe3ff,#7fb0ff);
+background:linear-gradient(#cfe6ff,#5aa0ff);
 }
 
 h1{
 color:#5d637a;
-transition:color 1s;
 }
 
 body.reveal h1{
@@ -34,7 +33,6 @@ position:relative;
 width:90vw;
 max-width:420px;
 margin:auto;
-perspective:1200px;
 }
 
 #wheel{
@@ -96,7 +94,6 @@ height:0;
 border-left:18px solid transparent;
 border-right:18px solid transparent;
 border-bottom:28px solid #333;
-filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
 }
 
 button{
@@ -108,7 +105,6 @@ border-radius:10px;
 background:#6c728a;
 color:white;
 cursor:pointer;
-transition:background 1s;
 }
 
 body.reveal button{
@@ -117,9 +113,9 @@ background:#2b6edc;
 
 #result{
 margin-top:30px;
-font-size:34px;
-font-weight:700;
-color:#1e4ed8;
+font-size:36px;
+font-weight:800;
+color:#1e40af;
 opacity:0;
 transition:opacity 1s;
 }
@@ -165,9 +161,7 @@ opacity:0;
 <div id="wheelContainer">
 
 <div id="pointer"></div>
-
 <div id="wheel"></div>
-
 <div id="hub"></div>
 
 </div>
@@ -176,14 +170,9 @@ opacity:0;
 
 <div id="result">👶 IT'S A BOY 👶</div>
 
-<audio id="tick" src="tick.mp3"></audio>
-<audio id="drum" src="drumroll.mp3"></audio>
-
 <script>
 
 const wheel=document.getElementById("wheel");
-const tick=document.getElementById("tick");
-const drum=document.getElementById("drum");
 
 const labels=[
 "👶 Boy","🎀 Girl","👶 Boy","🎀 Girl",
@@ -216,44 +205,22 @@ if(spinning) return;
 
 spinning=true;
 
-const spins=6;
-
-/* ALWAYS STOP ON BOY SLICES */
+/* FORCE BOY SLICES */
 const boySlices=[0,2,4,6];
 const chosen=boySlices[Math.floor(Math.random()*boySlices.length)];
 
-const stopAngle=chosen*sliceAngle + sliceAngle/2;
+/* align pointer perfectly */
+const stopAngle=chosen*sliceAngle;
 
-const finalRotation=spins*360 + (360-stopAngle);
+/* big spins + final */
+const spins=6;
+const finalRotation=(spins*360)+(360-stopAngle);
 
 wheel.style.transform=`rotate(${finalRotation}deg)`;
-
-playTicks();
-
-setTimeout(()=>{
-drum.play();
-},4200);
 
 setTimeout(()=>{
 revealBoy();
 },6000);
-
-}
-
-function playTicks(){
-
-let ticks=0;
-
-const interval=setInterval(()=>{
-
-tick.currentTime=0;
-tick.play();
-
-ticks++;
-
-if(ticks>40) clearInterval(interval);
-
-},120);
 
 }
 
@@ -277,7 +244,7 @@ c.className="confetti";
 
 c.style.left=Math.random()*100+"vw";
 
-const colors=["#1e4ed8","#3b82f6","#93c5fd","#ffffff"];
+const colors=["#1e40af","#3b82f6","#93c5fd","#ffffff"];
 c.style.background=colors[Math.floor(Math.random()*colors.length)];
 
 c.style.animationDuration=(Math.random()*3+2)+"s";
@@ -298,7 +265,7 @@ const b=document.createElement("div");
 b.className="balloon";
 
 b.style.left=Math.random()*100+"vw";
-b.style.background=Math.random()>0.5?"#1e4ed8":"#60a5fa";
+b.style.background=Math.random()>0.5?"#2563eb":"#60a5fa";
 
 document.body.appendChild(b);
 
@@ -309,5 +276,6 @@ setTimeout(()=>b.remove(),7000);
 }
 
 </script>
+
 </body>
 </html>
