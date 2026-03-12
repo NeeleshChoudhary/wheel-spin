@@ -205,16 +205,18 @@ if(spinning) return;
 
 spinning=true;
 
-/* FORCE BOY SLICES */
+const spins = 6;
+
+/* Only boy slices */
 const boySlices=[0,2,4,6];
-const chosen=boySlices[Math.floor(Math.random()*boySlices.length)];
+const chosen = boySlices[Math.floor(Math.random()*boySlices.length)];
 
-/* align pointer perfectly */
-const stopAngle=chosen*sliceAngle;
+const sliceAngle = 360/labels.length;
 
-/* big spins + final */
-const spins=6;
-const finalRotation=(spins*360)+(360-stopAngle);
+/* stop exactly in center of boy slice */
+const stopAngle = (chosen * sliceAngle) + (sliceAngle/2);
+
+const finalRotation = (spins*360) + (360 - stopAngle);
 
 wheel.style.transform=`rotate(${finalRotation}deg)`;
 
