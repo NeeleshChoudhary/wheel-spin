@@ -158,22 +158,23 @@ opacity:0;
 <h1>Spin the Wheel 🎡</h1>
 
 <div id="wheelContainer">
-
 <div id="pointer"></div>
 <div id="wheel"></div>
 <div id="hub"></div>
-
 </div>
 
 <button onclick="spinWheel()">SPIN</button>
 
 <div id="result">👶 IT'S A BOY 👶</div>
-<audio id="tick" src="tick.mp3"></audio>
-<audio id="drum" src="drumroll.mp3"></audio>
+
+<audio id="tick" src="tick.mp3" preload="auto"></audio>
+<audio id="drum" src="drumroll.mp3" preload="auto"></audio>
 
 <script>
 
 const wheel=document.getElementById("wheel");
+const tick=document.getElementById("tick");
+const drum=document.getElementById("drum");
 
 const labels=[
 "👶 Boy","🎀 Girl","👶 Boy","🎀 Girl",
@@ -206,15 +207,17 @@ if(spinning) return;
 
 spinning=true;
 
+playTicks();
+
+setTimeout(()=>{
+drum.play().catch(()=>{});
+},4200);
+
 const spins = 6;
 
-/* Only boy slices */
 const boySlices=[0,2,4,6];
 const chosen = boySlices[Math.floor(Math.random()*boySlices.length)];
 
-const sliceAngle = 360/labels.length;
-
-/* stop exactly in center of boy slice */
 const stopAngle = (chosen * sliceAngle) + (sliceAngle/2);
 
 const finalRotation = (spins*360) + (360 - stopAngle);
@@ -224,6 +227,23 @@ wheel.style.transform=`rotate(${finalRotation}deg)`;
 setTimeout(()=>{
 revealBoy();
 },6000);
+
+}
+
+function playTicks(){
+
+let ticks=0;
+
+const interval=setInterval(()=>{
+
+tick.currentTime=0;
+tick.play().catch(()=>{});
+
+ticks++;
+
+if(ticks>40) clearInterval(interval);
+
+},120);
 
 }
 
