@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spin The Wheel</title>
+
+<style>
+
+body{
+font-family:system-ui;
+background:linear-gradient(#f4f5f8,#ffffff);
+text-align:center;
+margin:0;
+padding:20px;
+}
+
+h1{
+color:#5d637a;
+}
+
+#wheelContainer{
+position:relative;
+width:90vw;
+max-width:420px;
+margin:auto;
+perspective:1200px;
+}
+
+#wheel{
+width:100%;
+aspect-ratio:1;
+border-radius:50%;
+border:12px solid #3c3c3c;
+
+background:conic-gradient(
+#78a6ea 0 45deg,
+#e6a1b8 45deg 90deg,
+#78a6ea 90deg 135deg,
+#e6a1b8 135deg 180deg,
+#78a6ea 180deg 225deg,
+#e6a1b8 225deg 270deg,
+#78a6ea 270deg 315deg,
+#e6a1b8 315deg 360deg
+);
+
+box-shadow:
+inset 0 8px 20px rgba(0,0,0,.3),
+0 15px 35px rgba(0,0,0,.35);
+
+transition:transform 6s cubic-bezier(.17,.67,.2,1);
+position:relative;
+}
+
+.sliceText{
+position:absolute;
+left:50%;
+top:50%;
+transform-origin:center;
+color:white;
+font-weight:600;
+text-shadow:0 2px 4px rgba(0,0,0,.5);
+font-size:15px;
+}
+
+#hub{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:80px;
+height:80px;
+border-radius:50%;
+background:radial-gradient(circle,#ffffff,#bfc5d6);
+border:6px solid white;
+box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
+#pointer{
+position:absolute;
+top:-8px;
+left:50%;
+transform:translateX(-50%);
+width:0;
+height:0;
+border-left:18px solid transparent;
+border-right:18px solid transparent;
+border-bottom:28px solid #333;
+filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
+}
+
+button{
+margin-top:35px;
+padding:16px 42px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#6c728a;
+color:white;
+cursor:pointer;
+}
+
+#result{
+margin-top:30px;
+font-size:34px;
+font-weight:700;
+color:#ff4f8f;
+opacity:0;
+transition:opacity 1s;
+}
+
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+top:-10px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(720deg);
+opacity:0;
+}
+}
+
+.balloon{
+position:fixed;
+bottom:-100px;
+width:40px;
+height:55px;
+border-radius:50%;
+animation:floatUp 7s linear forwards;
+}
+
+@keyframes floatUp{
+to{
+transform:translateY(-120vh);
+opacity:0;
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Spin the Wheel 🎡</h1>
+
+<div id="wheelContainer">
+
+<div id="pointer"></div>
+
+<div id="wheel"></div>
+
+<div id="hub"></div>
+
+</div>
+
+<button onclick="spinWheel()">SPIN</button>
+
+<div id="result">🎀 IT'S A BOY 🎀</div>
+
+<audio id="tick" src="tick.mp3"></audio>
+<audio id="drum" src="drumroll.mp3"></audio>
+
+<script>
+
+const wheel=document.getElementById("wheel");
+const tick=document.getElementById("tick");
+const drum=document.getElementById("drum");
+
+const labels=[
+"👶 Boy","🎀 Girl","👶 Boy","🎀 Girl",
+"👶 Boy","🎀 Girl","👶 Boy","🎀 Girl"
+];
+
+const sliceAngle=360/labels.length;
+
+labels.forEach((text,i)=>{
+
+let el=document.createElement("div");
+el.className="sliceText";
+
+let rotate=i*sliceAngle + sliceAngle/2;
+
+el.style.transform=
+`translate(-50%,-50%) rotate(${rotate}deg) translate(150px) rotate(90deg)`;
+
+el.innerHTML=text;
+
+wheel.appendChild(el);
+
+});
+
+let spinning=false;
+
+function spinWheel(){
+
+if(spinning) return;
+
+spinning=true;
+
+const spins=6;
+
+const girlSlices=[1,3,5,7];
+const chosen=girlSlices[Math.floor(Math.random()*girlSlices.length)];
+
+const stopAngle=chosen*sliceAngle + sliceAngle/2;
+
+const finalRotation=spins*360 + (360-stopAngle);
+
+wheel.style.transform=`rotate(${finalRotation}deg)`;
+
+playTicks();
+
+setTimeout(()=>{
+drum.play();
+},4200);
+
+setTimeout(()=>{
+revealGirl();
+},6000);
+
+}
+
+function playTicks(){
+
+let ticks=0;
+
+const interval=setInterval(()=>{
+
+tick.currentTime=0;
+tick.play();
+
+ticks++;
+
+if(ticks>40) clearInterval(interval);
+
+},120);
+
+}
+
+function revealGirl(){
+
+document.getElementById("result").style.opacity=1;
+
+launchConfetti();
+launchBalloons();
+
+}
+
+function launchConfetti(){
+
+for(let i=0;i<150;i++){
+
+const c=document.createElement("div");
+c.className="confetti";
+
+c.style.left=Math.random()*100+"vw";
+
+const colors=["#ff6fae","#ffd1e6","#ffffff","#ff9ec4"];
+c.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+c.style.animationDuration=(Math.random()*3+2)+"s";
+
+document.body.appendChild(c);
+
+setTimeout(()=>c.remove(),5000);
+
+}
+
+}
+
+function launchBalloons(){
+
+for(let i=0;i<12;i++){
+
+const b=document.createElement("div");
+b.className="balloon";
+
+b.style.left=Math.random()*100+"vw";
+b.style.background=Math.random()>0.5?"#ff9ec4":"#ff6fae";
+
+document.body.appendChild(b);
+
+setTimeout(()=>b.remove(),7000);
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
